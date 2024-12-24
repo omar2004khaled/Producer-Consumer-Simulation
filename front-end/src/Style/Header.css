@@ -1,0 +1,77 @@
+.header-controls {
+    display: flex;
+    justify-content: space-between; /* Space between items */
+    align-items: center;
+    padding: 8px 20px; /* Increase padding for more space */
+    background: linear-gradient(to right, #e0dddd, #f0f4f8); /* Subtle gradient background */
+    box-shadow: 0 4px 10px rgba(217, 29, 29, 0.1); /* Soft shadow for depth */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    font-size: 1.2em; /* Increase font size */
+    height: auto; /* Adjust height to fit content */
+  }
+  
+  .header-controls p {
+    margin: 0 0 10px 0; /* Add margin below the paragraph */
+    font-size: 1.3em;
+    color: #000000;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px; /* Add space between buttons */
+  }
+  
+  .button-group button {
+    width: 30px; /* Adjust width */
+    height: 30px; /* Adjust height */
+    border-radius: 40px;
+    color: #555;
+    font-size: 1.3em; /* Adjust font size */
+    font-weight: 600;
+    cursor: pointer;
+    background: #f0f4f8;
+    font-family: 'Signika Negative', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-color: black;
+  }
+  
+  .button-group button:hover {
+    background: linear-gradient(to right, #e8f0fe, #d0e6fc); /* Gradient hover effect */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow on hover */
+    transform: translateX(5px); /* Change background color on hover */
+  }
+  
+  .header-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo {
+    border-radius: 20px;
+    height: 110px; /* Keep the original size */
+    margin-right: 10px; /* Original margin */
+    transition: transform 0.3s ease;
+  }
+  
+  .header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1; /* Ensure it takes up available space */
+    text-align: center; /* Center text */
+  }
+  .header-left h2 {
+    font-size: 0.8em; /* Adjust the size as needed */
+    font-family: 'Arial', sans-serif; /* Change to your desired font */
+    color: #333; /* Optional: Change the color */
+    margin: 0; /* Optional: Adjust margin */
+  }
+  

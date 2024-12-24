@@ -1,0 +1,21 @@
+.simulation-area {
+    width: calc(100%); /* Adjust width to leave space for the menu bar */
+    min-width: 1408px; /* Set a minimum width */
+    height: calc(100vh - 15px); /* Adjust height to leave space for the header */
+    min-height: 500px; /* Set a minimum height */
+    background-color: #ffffff; /* Light background color */
+    border: 0px solid #ffffff; /* Border for the simulation area */
+    border-radius: 0px; /* Rounded corners */
+    display: flex;
+    flex-wrap: wrap; /* Allow shapes to wrap within the area */
+    justify-content: center; /* Center shapes horizontally */
+    align-items: center; /* Center shapes vertically */
+    position: relative; /* Allow absolute positioning of shapes */
+    overflow: auto; /* Enable scrolling if content overflows */
+    padding: 10px; /* Padding inside the simulation area */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: background-color 0.3s ease; /* Smooth background color transition */
+    margin-top: 125px; /* Add margin to leave space for the header */
+    margin-left: 225px; /* Add margin to leave space for the menu bar */
+    border-radius: 10px;  
+  }

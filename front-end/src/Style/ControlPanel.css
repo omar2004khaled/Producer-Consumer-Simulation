@@ -1,0 +1,49 @@
+.control-panel {
+    width: 200px; /* Reduced width */
+    background: linear-gradient(to bottom, #e0dddd, #f0f4f8); /* Smooth gradient */
+    border-right: 1px solid #ccc;
+    padding: 15px; /* Reduced padding */
+    position: fixed;
+    left: 0;
+    top: 60px; /* Adjusted to avoid being hidden behind the header */
+    bottom: 0; /* Full height menu */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    overflow-y: auto;
+  }
+  
+  .control-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Increased gap for better spacing */
+    padding-top: 90px;
+  }
+  
+  .control-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #555; /* Neutral text color */
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .control-item:hover {
+    background: linear-gradient(to right, #e8f0fe, #d0e6fc); /* Gradient hover effect */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow on hover */
+    transform: translateX(5px);
+  }
+  
+  .control-icon {
+    font-size: 2.5em;
+    color: #1a73e8;
+  }
+  
+  .separator {
+    height: 1px;
+    background-color: #000;
+    margin: 10px 0;
+  }
