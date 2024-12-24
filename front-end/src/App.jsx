@@ -24,15 +24,17 @@ const App = () => {
   };
 
   return (
-    <div>
+    <div style={{display:"flex", flexDirection: "column"}}>
       <Header products={products} increment={incrementProducts} decrement={decrementProducts} />
-      <ControlPanel
-        simulate={simulate}
-        resimulate={resimulate}
-        endSimulation={endSimulation}
-        clearShapes={clearShapes}
-      />
-      <SimulationArea shapes={shapes} setShapes={setShapes} />
+      <div style={{display:"flex", flex:"1"}}>
+        <ControlPanel
+          simulate={simulate}
+          resimulate={resimulate}
+          endSimulation={endSimulation}
+          clearShapes={clearShapes}
+        />
+        <SimulationArea shapes={shapes} setShapes={setShapes} />
+      </div>
     </div>
   );
 };

@@ -19,3 +19,10 @@
     margin-left: 225px; /* Add margin to leave space for the menu bar */
     border-radius: 10px;  
   }
+
+  .react-flow-container {
+    margin-left: 12vw;
+    margin-top: 14vh;
+    width: 86vw;
+    height: 86vh;
+  }

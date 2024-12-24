@@ -1,19 +1,72 @@
-import React from 'react';
-import Shape from './Shape';
-import '../Style/simulationArea.css'
+import '../Style/simulationArea.css';
+import React, { useCallback } from 'react';
+import '@xyflow/react/dist/style.css';
 
-const SimulationArea = ({ shapes, setShapes }) => {
-  const createShape = (type) => {
-    const newShape = { id: Date.now(), type };
-    setShapes([...shapes, newShape]);
+import {
+  ReactFlow,
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+  addEdge,
+  ReactFlowProvider
+} from '@xyflow/react';
+
+import CircleNode from './CircleNode';
+import RectangleNode from './RectangleNode';
+
+const nodeTypes = {
+  circle: CircleNode,
+  rectangle: RectangleNode
+};
+
+const SimulationArea = () => {
+  const initialNodes = [
+    { id: '1', type: 'circle', position: { x: 0, y: 0 }, data: { label: 'Circle Node' } },
+    { id: '2', type: 'rectangle', position: { x: 0, y: 100 }, data: { label: 'Rectangle Node' } },
+  ];
+  const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    [setEdges],
+  );
+
+  const addNode = () => {
+    const newNode = {
+      id: (nodes.length + 1).toString(),
+      type: 'circle', // or 'rectangle' depending on what you want to add
+      position: { x: Math.random() * 400, y: Math.random() * 400 },
+      data: { label: `Node ${nodes.length + 1}` },
+    };
+    setNodes((nds) => [...nds, newNode]);
   };
-
+  
   return (
-    <div className="simulation-area" onClick={(e) => createShape('machine')}>
-      {shapes.map((shape) => (
-        <Shape key={shape.id} type={shape.type} />
-      ))}
-    </div>
+      <div className='react-flow-container'>
+        <button onClick={addNode}>Add Node</button>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          nodeTypes={nodeTypes}
+        >
+          <Controls
+            className='controls'
+            orientation="horizontal"
+            position='bottom-right'
+            style={{
+              boxShadow: "0 0 5px rgba(0, 0, 0, 0.2)",
+              position: "fixed",
+              bottom: "10px"
+            }}
+          />
+        </ReactFlow>
+      </div>
   );
 };
 
