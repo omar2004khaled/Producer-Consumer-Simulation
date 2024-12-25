@@ -31,9 +31,26 @@ const SimulationArea = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge({ ...params, ...Arrow }, eds)),
-    [setEdges],
+    (params) => {
+      const sourceNode = nodes.find((node) => node.id === params.source);
+      const targetNode = nodes.find((node) => node.id === params.target);
+  
+      if (params.source === params.target) {
+        alert("A node cannot connect to itself!");
+        return;
+      }
+  
+      if (sourceNode.type === targetNode.type) {
+        alert("Source and target nodes must be of different types!");
+        return;
+      }
+  
+      setEdges((eds) => addEdge({ ...params, ...Arrow }, eds));
+    },
+    [setEdges, nodes], // Ensure 'nodes' is included in dependencies
   );
+  
+  
 
   const addQueue = () => {
     setQueuesNo(queuesNo + 1)
