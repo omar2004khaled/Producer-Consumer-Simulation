@@ -1,5 +1,5 @@
 import '../Style/simulationArea.css';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import '@xyflow/react/dist/style.css';
 
 import {
@@ -14,17 +14,19 @@ import {
   MarkerType,
 } from '@xyflow/react';
 
-import CircleNode from './CircleNode';
-import RectangleNode from './RectangleNode';
+import Machine from './Machine';
+import Queue from './Queue';
 import { Arrow } from './Arrow';
 import ControlPanel from './ControlPanel';
 
 const nodeTypes = {
-  circle: CircleNode,
-  rectangle: RectangleNode,
+  Machine: Machine,
+  Queue: Queue,
 };
 
 const SimulationArea = () => {
+  const [queuesNo, setQueuesNo] = useState(0);
+  const [machinesNo, setMachinesNo] = useState(0);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
@@ -33,22 +35,24 @@ const SimulationArea = () => {
     [setEdges],
   );
 
-  const addRectangleNode = () => {
+  const addQueue = () => {
+    setQueuesNo(queuesNo + 1)
     const newNode = {
       id: (nodes.length + 1).toString(),
-      type: 'rectangle',
+      type: 'Queue',
       position: { x: Math.random() * 400, y: Math.random() * 400 },
-      data: { label: `Rectangle Node ${nodes.length + 1}` },
+      data: { label: `Queue ${queuesNo + 1}` },
     };
     setNodes((nds) => [...nds, newNode]);
   };
 
-  const addCircleNode = () => {
+  const addMachine = () => {
+    setMachinesNo(machinesNo + 1)
     const newNode = {
       id: (nodes.length + 1).toString(),
-      type: 'circle',
+      type: 'Machine',
       position: { x: Math.random() * 400, y: Math.random() * 400 },
-      data: { label: `Circle Node ${nodes.length + 1}` },
+      data: { label: `Machine ${machinesNo + 1}` },
     };
     setNodes((nds) => [...nds, newNode]);
   };
@@ -59,8 +63,8 @@ const SimulationArea = () => {
         onSimulate={() => console.log('Simulate')}
         onResimulate={() => console.log('Resimulate')}
         onClear={() => console.log('Clear')}
-        onAddRectangleNode={addRectangleNode}
-        onAddCircleNode={addCircleNode}
+        onaddQueue={addQueue}
+        onaddMachine={addMachine}
       />
       <ReactFlow
         nodes={nodes}

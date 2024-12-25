@@ -1,7 +1,7 @@
 import React from 'react';
 import Dots from './Dots';
 
-const CircleNode = ({ data }) => {
+const Machine = ({ data }) => {
   return (
     <>
         <Dots id={data.id} height={80} width={80} />
@@ -22,4 +22,4 @@ const CircleNode = ({ data }) => {
   );
 };
 
-export default CircleNode;
+export default Machine;

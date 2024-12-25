@@ -1,7 +1,7 @@
 import React from 'react';
 import Dots from './Dots';
 
-const RectangleNode = ({ data }) => {
+const Queue = ({ data }) => {
   return (
     <>
       <Dots id={data.id} height={80} width={80} />
@@ -22,4 +22,4 @@ const RectangleNode = ({ data }) => {
   );
 };
 
-export default RectangleNode;
+export default Queue;
