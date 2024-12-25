@@ -1,20 +1,24 @@
 import React from 'react';
+import Dots from './Dots';
 
 const RectangleNode = ({ data }) => {
   return (
-    <div style={{
-      width: 100,
-      height: 50,
-      backgroundColor: "yellow",
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      border: '1px solid',
-      borderRadius: "5px",
-      textAlign: "center"
-    }}>
-      {data.label}
-    </div>
+    <>
+      <Dots id={data.id} height={80} width={80} />
+      <div style={{
+        width: 100,
+        height: 50,
+        backgroundColor: "yellow",
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        border: '1px solid',
+        borderRadius: "5px",
+        textAlign: "center"
+      }}>
+        {data.label}
+      </div>
+    </>
   );
 };
 
