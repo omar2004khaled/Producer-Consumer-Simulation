@@ -25,20 +25,8 @@ const nodeTypes = {
 };
 
 const SimulationArea = () => {
-  const initialNodes = [
-    { id: '1', type: 'circle', position: { x: 0, y: 0 }, data: { label: 'Circle Node' } },
-    { id: '2', type: 'rectangle', position: { x: 0, y: 100 }, data: { label: 'Rectangle Node' } },
-  ];
-  const initialEdges = [
-    {
-      id: 'e1-2',
-      source: '1',
-      target: '2',
-      ...Arrow,
-    },
-  ];
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge({ ...params, ...Arrow }, eds)),
