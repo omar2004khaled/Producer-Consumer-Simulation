@@ -17,6 +17,7 @@ import {
 import CircleNode from './CircleNode';
 import RectangleNode from './RectangleNode';
 import { Arrow } from './Arrow';
+import ControlPanel from './ControlPanel';
 
 const nodeTypes = {
   circle: CircleNode,
@@ -44,19 +45,35 @@ const SimulationArea = () => {
     [setEdges],
   );
 
-  const addNode = () => {
+  const addRectangleNode = () => {
     const newNode = {
       id: (nodes.length + 1).toString(),
-      type: 'circle', // or 'rectangle' depending on what you want to add
+      type: 'rectangle',
       position: { x: Math.random() * 400, y: Math.random() * 400 },
-      data: { label: `Node ${nodes.length + 1}` },
+      data: { label: `Rectangle Node ${nodes.length + 1}` },
+    };
+    setNodes((nds) => [...nds, newNode]);
+  };
+
+  const addCircleNode = () => {
+    const newNode = {
+      id: (nodes.length + 1).toString(),
+      type: 'circle',
+      position: { x: Math.random() * 400, y: Math.random() * 400 },
+      data: { label: `Circle Node ${nodes.length + 1}` },
     };
     setNodes((nds) => [...nds, newNode]);
   };
 
   return (
     <div className='react-flow-container'>
-      <button onClick={addNode}>Add Node</button>
+      <ControlPanel
+        onSimulate={() => console.log('Simulate')}
+        onResimulate={() => console.log('Resimulate')}
+        onClear={() => console.log('Clear')}
+        onAddRectangleNode={addRectangleNode}
+        onAddCircleNode={addCircleNode}
+      />
       <ReactFlow
         nodes={nodes}
         edges={edges}
