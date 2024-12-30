@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import Header from './Components/Header'
+import Header from './Components/Header';
 import ControlPanel from './Components/ControlPanel';
 import SimulationArea from './Components/SimulationArea';
-
 
 const App = () => {
   const [products, setProducts] = useState(0);
   const [shapes, setShapes] = useState([]);
 
-  const incrementProducts = () => setProducts(products + 1);
-  const decrementProducts = () => {
-    if (products > 0) setProducts(products - 1);
-  };
   const clearShapes = () => setShapes([]);
   const simulate = () => {
     // Logic to start simulation
@@ -24,9 +19,9 @@ const App = () => {
   };
 
   return (
-    <div style={{display:"flex", flexDirection: "column"}}>
-      <Header products={products} increment={incrementProducts} decrement={decrementProducts} />
-      <div style={{display:"flex", flex:"1"}}>
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <Header products={products} setProducts={setProducts} />
+      <div style={{ display: "flex", flex: "1" }}>
         <ControlPanel
           simulate={simulate}
           resimulate={resimulate}

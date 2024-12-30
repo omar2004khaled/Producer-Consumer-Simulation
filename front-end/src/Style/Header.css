@@ -6,7 +6,7 @@
     background: linear-gradient(to right, #e0dddd, #f0f4f8); /* Subtle gradient background */
     box-shadow: 0 4px 10px rgba(217, 29, 29, 0.1); /* Soft shadow for depth */
     position: fixed;
-    top: 0;
+    top: 0; 
     left: 0;
     width: 100%;
     z-index: 1000;
@@ -73,5 +73,21 @@
     font-family: 'Arial', sans-serif; /* Change to your desired font */
     color: #333; /* Optional: Change the color */
     margin: 0; /* Optional: Adjust margin */
+  }
+  .digital-input {
+    width: 60px; /* Adjust width */
+    height: 30px; /* Adjust height */
+    font-size: 1.2em; /* Adjust font size */
+    text-align: center; /* Center align the text */
+    border-radius: 5px; /* Rounded corners */
+    border: 1px solid #ccc; /* Light border */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: all 0.3s ease;
+  }
+  
+  .digital-input:focus {
+    outline: none;
+    border-color: #007bff; /* Highlight border color */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.25); /* Glow effect */
   }
   
