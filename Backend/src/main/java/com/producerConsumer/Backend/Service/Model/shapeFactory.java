@@ -2,7 +2,7 @@ package com.producerConsumer.Backend.Service.Model;
 
 
 public class shapeFactory {
-    public shape getType(shapeDTO dto) {
+    public static shape getType(shapeDTO dto) {
         if (dto.name.equals("circle")) {
             int min = 2;
             int max = 10;

@@ -8,5 +8,4 @@ public class Caretaker {
     public void setProjectMemento(ProjectMemento projectMemento) {
         this.projectMemento = projectMemento;
     }
-
 }
