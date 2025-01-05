@@ -17,6 +17,8 @@ const Queue = ({ data }) => {
         textAlign: "center"
       }}>
         {data.label}
+        {data.noOfProducts > 0 &&
+        (<><br></br> ({data.noOfProducts})</>)}
       </div>
     </>
   );
