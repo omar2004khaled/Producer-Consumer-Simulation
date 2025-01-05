@@ -87,38 +87,64 @@ const SimulationArea = () => {
         return;
       }
 
+      // Update the source and target nodes
+      const updatedNodes = nodes.map(node => {
+        if (node.id === params.source && node.type === 'Queue') {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              inMachines: [...node.data.inMachines, parseInt(params.target)]
+            }
+          };
+        } else if (node.id === params.target && node.type === 'Queue') {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              outMachines: [...node.data.outMachines, parseInt(params.source)]
+            }
+          };
+        }
+        return node;
+      });
+
+      setNodes(updatedNodes);
       setEdges((eds) => addEdge({ ...params, ...Arrow }, eds));
     },
-    [setEdges, nodes], // Ensure 'nodes' is included in dependencies
+    [setEdges, nodes],
   );
 
   const addQueue = () => {
     setQueuesNo(queuesNo + 1);
     const newNode = {
-      id: `queue-${nodes.length + 1}`,
+      id: `${nodes.length + 1}`,
       type: 'Queue',
       position: { x: Math.random() * 400, y: Math.random() * 400 },
       data: {
         label: `Queue ${queuesNo + 1}`,
         id: nodes.length + 1,
+        type: 'Queue',
         noOfProducts: 0,
         inMachines: [],
-        outMachines: [],
+        outMachines: []
       },
     };
     setNodes((nds) => [...nds, newNode]);
+    console.log(nodes)
   };
 
   const addMachine = () => {
     setMachinesNo(machinesNo + 1);
     const newNode = {
-      id: `machine-${nodes.length + 1}`,
+      id: `${nodes.length + 1}`,
       type: 'Machine',
       position: { x: Math.random() * 400, y: Math.random() * 400 },
       data: {
         label: `Machine ${machinesNo + 1}`,
         id: nodes.length + 1,
-        color: 'blue',
+        type: 'Machine',
+        color: 'none'
       },
     };
     setNodes((nds) => [...nds, newNode]);
