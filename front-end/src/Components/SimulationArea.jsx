@@ -1,5 +1,5 @@
 import '../Style/simulationArea.css';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import '@xyflow/react/dist/style.css';
 
 import {
@@ -30,46 +30,96 @@ const SimulationArea = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
 
+  useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8080/ws');
+
+    socket.onopen = () => {
+      console.log('Connected to the server');
+    };
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      const updatedNodes = nodes.map(node => {
+        if (node.type === 'Machine') {
+          const machine = data.machines.find(m => m.id === parseInt(node.data.id));
+          if (machine) {
+            return {
+              ...node,
+              data: { ...node.data, ...machine }
+            };
+          }
+        } else if (node.type === 'Queue') {
+          const queue = data.queues.find(q => q.id === parseInt(node.data.id));
+          if (queue) {
+            return {
+              ...node,
+              data: { ...node.data, ...queue }
+            };
+          }
+        }
+        return node;
+      });
+
+      setNodes(updatedNodes);
+    };
+
+    socket.onclose = () => {
+      console.log('Disconnected from the server');
+    };
+
+    return () => {
+      socket.close();
+    };
+  }, [nodes]);
+
   const onConnect = useCallback(
     (params) => {
       const sourceNode = nodes.find((node) => node.id === params.source);
       const targetNode = nodes.find((node) => node.id === params.target);
-  
+
       if (params.source === params.target) {
         alert("A node cannot connect to itself!");
         return;
       }
-  
+
       if (sourceNode.type === targetNode.type) {
         alert("Source and target nodes must be of different types!");
         return;
       }
-  
+
       setEdges((eds) => addEdge({ ...params, ...Arrow }, eds));
     },
     [setEdges, nodes], // Ensure 'nodes' is included in dependencies
   );
-  
-  
 
   const addQueue = () => {
-    setQueuesNo(queuesNo + 1)
+    setQueuesNo(queuesNo + 1);
     const newNode = {
-      id: (nodes.length + 1).toString(),
+      id: `queue-${nodes.length + 1}`,
       type: 'Queue',
       position: { x: Math.random() * 400, y: Math.random() * 400 },
-      data: { label: `Queue ${queuesNo + 1}` },
+      data: {
+        label: `Queue ${queuesNo + 1}`,
+        id: nodes.length + 1,
+        noOfProducts: 0,
+        inMachines: [],
+        outMachines: [],
+      },
     };
     setNodes((nds) => [...nds, newNode]);
   };
 
   const addMachine = () => {
-    setMachinesNo(machinesNo + 1)
+    setMachinesNo(machinesNo + 1);
     const newNode = {
-      id: (nodes.length + 1).toString(),
+      id: `machine-${nodes.length + 1}`,
       type: 'Machine',
       position: { x: Math.random() * 400, y: Math.random() * 400 },
-      data: { label: `Machine ${machinesNo + 1}` },
+      data: {
+        label: `Machine ${machinesNo + 1}`,
+        id: nodes.length + 1,
+        color: 'blue',
+      },
     };
     setNodes((nds) => [...nds, newNode]);
   };
