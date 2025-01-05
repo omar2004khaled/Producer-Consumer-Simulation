@@ -2,75 +2,88 @@ package com.producerConsumer.Backend.Service.simulation;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-// import com.producerConsumer.Backend.Service.Model.Link;
 import com.producerConsumer.Backend.Service.Model.Product;
 import com.producerConsumer.Backend.Service.Model.shapeDTO;
 import com.producerConsumer.Backend.Service.Model.shapeFactory;
+import com.producerConsumer.Backend.Service.Model.Queue;
 
 public class ServiceSimulation {
-    private static ServiceSimulation simulate=null;
-    private Project project=new Project();
-    private Caretaker caretaker=new Caretaker();
-    private int proudctIn;
+    private static volatile ServiceSimulation simulate = null;
+    private Project project = new Project();
+    private Caretaker caretaker = new Caretaker();
+    private int productIn = 0;  
+    private Boolean flag = false;
+
     private ServiceSimulation() {
     }
-    public void saveSate(){
+
+    public void saveState() { 
         caretaker.setProjectMemento(project.createMemento());
     }
-    public void restoreState(){
+
+    public void restoreState() {
         project.restoreFromMemento(caretaker.getProjectMemento());
     }
-    public static synchronized ServiceSimulation getInstance(){
-        if(simulate==null){
-            simulate=new ServiceSimulation();
+
+    public static synchronized ServiceSimulation getInstance() {
+        if (simulate == null) {
+            simulate = new ServiceSimulation();
         }
         return simulate;
     }
-    public void addProduct(){
-        proudctIn++;
+
+    public void addProduct() {
+        productIn++;
     }
-    public void removeProduct(){
-        proudctIn--;
+
+    public void removeProduct() {
+        if (productIn > 0) {
+            productIn--;
+        }
     }
-    public void buildProject(List<shapeDTO>shapeDTOs){
-        for(shapeDTO dto : shapeDTOs){
-            if(dto.name.equals("line")){
-                // this.project.addLink((Link) shapeFactory.getType(dto));
-            }
+
+    public void buildProject(List<shapeDTO> shapeDTOs) {
+        for (shapeDTO dto : shapeDTOs) {
             this.project.addShape(shapeFactory.getType(dto));
         }
     }
-    public  Project getProject(){
+
+    public Project getProject() {
         return project;
     }
-    public Project setProject(Project project){
-        return this.project=project;
+
+    public void setProject(Project project) {
+        this.project = project;
     }
-    private Boolean flag = false;
-    public int getRandomTime(){
+
+    public int getRandomTime() {
         int minimum = 1;
         int maximum = 5;
-        int randomtime = (int)Math.floor(Math.random() *(maximum - minimum + 1) + minimum);
-        return randomtime;
+        return (int) Math.floor(Math.random() * (maximum - minimum + 1) + minimum);
     }
-    public void runSimulation()throws InterruptedException{
-        int input = proudctIn;
-        Project project = new Project();
-        while(!flag){
+
+    public void runSimulation() throws InterruptedException {
+        while (!flag) {
             TimeUnit.SECONDS.sleep(getRandomTime());
-            if(proudctIn>0){
-                ((com.producerConsumer.Backend.Service.Model.Queue) this.project.getShapes().get("0")).addProduct(new Product());
-                simulate.saveSate();
-                proudctIn--;
+
+            if (productIn > 0) {
+                Queue queue = (Queue) this.project.getShapes().get("0");
+                if (queue != null) {
+                    saveState(); 
+                    queue.addProduct(new Product());
+                    productIn--;
+                } else {
+                    System.err.println("Queue with ID '0' does not exist!");
+                }
             }
         }
         flag = false;
     }
-    public void stopSimulation(){
-        this.proudctIn=0;
+    public void stopSimulation() {
+        this.productIn = 0;
         this.flag = true;
     }
-    public void start(){
-        this.flag=false;
-    } 
+    public void start() {
+        this.flag = false;
+    }
 }
