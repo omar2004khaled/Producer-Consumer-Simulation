@@ -14,7 +14,8 @@ const Machine = ({ data }) => {
         justifyContent: 'center',
         display: 'flex',
         border: '1px solid',
-        textAlign: "center"
+        textAlign: "center",
+        boxShadow: `0 0 20px ${data.color}`
         }}>
         {data.label}
         </div>
