@@ -16,6 +16,9 @@ public class ServiceSimulation {
 
     private ServiceSimulation() {
     }
+    public void setProductIn(int productIn) {
+        this.productIn = productIn;
+    }
 
     public void saveState() { 
         caretaker.setProjectMemento(project.createMemento());

@@ -7,6 +7,4 @@ public class shapeDTO {
     public String color;
     public String text;
     public String id;
-    public String idto;
-    public String idfrom;
 }

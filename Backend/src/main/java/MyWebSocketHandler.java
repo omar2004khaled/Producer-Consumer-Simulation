@@ -19,6 +19,6 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-    System.out.println("Client disconnected");
-  }
+        System.out.println("Client disconnected");
+ }
 }

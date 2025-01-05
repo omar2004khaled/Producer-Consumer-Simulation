@@ -3,13 +3,14 @@ package com.producerConsumer.Backend.Service.Model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class shape {
+public abstract class shape {
     private String name;
     private double x;
     private double y;
     private String color;
     private String text;
     private String id;
+
     private List<Product> products = new ArrayList<>() ;
 
     public shape() {
@@ -64,11 +65,4 @@ public class shape {
     public void setProducts(List<Product> products) {
         this.products = products;
     }
-
-    @Override
-    public String toString() {
-        return "shape [color=" + color + ", id=" + id + ", name=" + name + ", text=" + text + ", x=" + x + ", y=" + y
-                + "]";
-    }
-
 }

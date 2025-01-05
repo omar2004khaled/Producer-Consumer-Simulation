@@ -12,8 +12,9 @@ import com.producerConsumer.Backend.Service.simulation.ServiceSimulation;
 public class ServiceFacade {
     private ServiceSimulation simulate =ServiceSimulation.getInstance();
     public ServiceFacade(){}
-    public void startSimulation(List<shapeDTO>dto) throws  InterruptedException {
+    public void startSimulation(List<shapeDTO>dto,int Prouctno) throws  InterruptedException {
         simulate.start();
+        simulate.setProductIn(Prouctno);
         simulate.buildProject(dto);
         simulate.runSimulation();
     }
@@ -29,4 +30,5 @@ public class ServiceFacade {
     public Project getProject(){
         return simulate.getProject();
     }
+
 }
