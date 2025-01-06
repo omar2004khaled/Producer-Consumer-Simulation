@@ -16,6 +16,8 @@ public class ServiceFacade {
         simulate.start();
         simulate.setProductIn(Prouctno);
         simulate.buildProject(dto);
+        System.out.println(simulate.getFirstQueue());
+        System.out.println(simulate.getLastQueue());
         simulate.runSimulation();
     }
     public void  addProduct(){

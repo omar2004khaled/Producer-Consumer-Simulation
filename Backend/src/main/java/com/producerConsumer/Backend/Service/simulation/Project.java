@@ -24,24 +24,4 @@ public class Project {
     public void restoreFromMemento(ProjectMemento memento){
         shapes=new HashMap<>(memento.getShapes());
     }
-    public Queue findFirstQueue() {
-        for (shape s : shapes.values()) {
-            if (s instanceof Queue queue) { 
-                if (queue.getInMachines().isEmpty()) {
-                    return queue;
-                }
-            }
-        }
-        return null; 
-    }
-    public Queue findLastQueue() {
-        for (shape s : shapes.values()) {
-            if (s instanceof Queue queue) { 
-                if (queue.getOutMachines().isEmpty()) {
-                    return queue;
-                }
-            }
-        }
-        return null;
-    }
 }

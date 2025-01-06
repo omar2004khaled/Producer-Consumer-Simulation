@@ -1,41 +1,33 @@
 package com.producerConsumer.Backend.Service.Model;
 
+import com.producerConsumer.Backend.Service.Observer;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.producerConsumer.Backend.Service.Observer;
-import com.producerConsumer.Backend.Service.Subject;
+public class Queue extends shape implements Observer, Runnable {
 
-public class Queue extends shape implements Subject, Runnable {
-
-    private Map<String, Machine> machinestoMap = new HashMap<>();
-    private Map<String, Machine> machinesfreeMap = new HashMap<>();
-    private List<Observer> observers = new ArrayList<>(); // List of observers (machines)
+    private List<String> machinestoList = new ArrayList<>();
+    private List<String> machinesfreeList = new ArrayList<>();
     private List<Product> products = new ArrayList<>();
     private Thread thread;
+    private Map<String, Machine> machinesMap; // Map to store all machines by their IDs
 
     public Queue() {
     }
 
-    public Queue(shapeDTO dto) {
+    public Queue(shapeDTO dto, Map<String, Machine> machinesMap) {
         super(dto);
+        this.machinestoList = dto.outMachines;
+        this.machinesMap = machinesMap;
     }
+
     @Override
-    public void attach(Observer observer) {
-        observers.add(observer);
+    public void update(Queue queue) {
+        System.out.println("Queue " + getId() + " received an update from a machine.");
     }
-    @Override
-    public void detach(Observer observer) {
-        observers.remove(observer);
-    }
-    @Override
-    public void notifyObservers(Machine machine) {
-        for (Observer observer : observers) {
-            observer.update(machine);
-        }
-    }
+
     public void addtoProduct(Product product) {
         super.getProducts().add(product);
         if (super.getProducts().size() == 1) {
@@ -43,6 +35,7 @@ public class Queue extends shape implements Subject, Runnable {
             thread.start();
         }
     }
+
     @Override
     public void run() {
         while (!super.getProducts().isEmpty()) {
@@ -52,83 +45,112 @@ public class Queue extends shape implements Subject, Runnable {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
-            if (!machinesfreeMap.isEmpty()) {
-                Machine machine = machinesfreeMap.entrySet().iterator().next().getValue();
-                machine.setProduct(super.getProducts().get(0));
-                super.getProducts().remove(0);
-                notifyObservers(machine);
+            if (!machinesfreeList.isEmpty()) {
+                String machineId = machinesfreeList.get(0);
+                Machine machine = machinesMap.get(machineId);
+                if (machine != null) {
+                    machine.setProduct(super.getProducts().get(0));
+                    super.getProducts().remove(0);
+                }
             }
         }
     }
-    public void addMachine(String id, Machine machine) {
-        machinestoMap.put(id, machine);
+
+    public void addMachine(String id) {
+        machinestoList.add(id);
     }
+
     public void machinesfree(String id) {
-        Machine machine = machinestoMap.get(id);
-        if (machine != null) {
-            machinesfreeMap.put(id, machine);
-            notifyObservers(machine); // Notify that the machine is free
+        if (machinestoList.contains(id)) {
+            machinesfreeList.add(id);
+            Machine machine = machinesMap.get(id);
+            if (machine != null) {
+                machine.notifyObservers(this); // Notify that the machine is free
+            }
         }
     }
+
     public void machinesbusy(String id) {
-        machinesfreeMap.remove(id);
+        machinesfreeList.remove(id);
     }
+
     public void addProduct(Product product) {
         this.products.add(product);
     }
+
     public void removeProduct(Product product) {
         this.products.remove(product);
     }
+
     public List<Product> getProducts() {
         return products;
     }
+
     public void setProducts(List<Product> products) {
         this.products = products;
     }
-    public Map<String, Machine> getMachinestoMap() {
-        return machinestoMap;
+
+    public List<String> getMachinestoList() {
+        return machinestoList;
     }
-    public void setMachinestoMap(Map<String, Machine> machinestoMap) {
-        this.machinestoMap = machinestoMap;
+
+    public void setMachinestoList(List<String> machinestoList) {
+        this.machinestoList = machinestoList;
     }
-    public Map<String, Machine> getMachinesfreeMap() {
-        return machinesfreeMap;
+
+    public List<String> getMachinesfreeList() {
+        return machinesfreeList;
     }
-    public void setMachinesfreeMap(Map<String, Machine> machinesfreeMap) {
-        this.machinesfreeMap = machinesfreeMap;
+
+    public void setMachinesfreeList(List<String> machinesfreeList) {
+        this.machinesfreeList = machinesfreeList;
     }
-    public List<Observer> getObservers() {
-        return observers;
-    }
-    public void setObservers(List<Observer> observers) {
-        this.observers = observers;
-    }
+
     public Thread getThread() {
         return thread;
     }
+
     public void setThread(Thread thread) {
         this.thread = thread;
     }
+
     public static Queue findFirstQueue(List<Queue> queues) {
-            for (Queue queue : queues) {
-                if (queue.getInMachines().isEmpty()) {
-                    return queue;
-                }
+        for (Queue queue : queues) {
+            if (queue.getInMachines().isEmpty()) {
+                return queue;
             }
-            return null;
         }
-        public List<Machine> getInMachines() {
-            return new ArrayList<>(machinestoMap.values());  
+        return null;
+    }
+
+    public List<Machine> getInMachines() {
+        List<Machine> machines = new ArrayList<>();
+        for (String id : machinestoList) {
+            Machine machine = machinesMap.get(id);
+            if (machine != null) {
+                machines.add(machine);
+            }
         }
+        return machines;
+    }
+
     public static Queue findLastQueue(List<Queue> queues) {
         for (Queue queue : queues) {
             if (queue.getOutMachines().isEmpty()) {
                 return queue;
             }
         }
-        return null; 
+        return null;
     }
+
     public List<Machine> getOutMachines() {
-        return new ArrayList<>(machinesfreeMap.values());  
+        List<Machine> machines = new ArrayList<>();
+        for (String id : machinesfreeList) {
+            Machine machine = machinesMap.get(id);
+            if (machine != null) {
+                machines.add(machine);
+            }
+        }
+        return machines;
     }
 }

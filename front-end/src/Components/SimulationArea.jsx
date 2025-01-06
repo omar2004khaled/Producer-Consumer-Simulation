@@ -40,38 +40,42 @@ const SimulationArea = ({ products }) => {
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      const updatedNodes = nodes.map(node => {
-        if (node.type === 'Machine') {
-          const machine = data.machines.find(m => m.id === parseInt(node.data.id));
-          if (machine) {
-            return {
-              ...node,
-              data: { ...node.data, ...machine }
-            };
+      setNodes(prevNodes => {
+        return prevNodes.map(node => {
+          if (node.type === 'Machine') {
+            const machine = data.machines.find(m => m.id === parseInt(node.data.id));
+            if (machine) {
+              return {
+                ...node,
+                data: { ...node.data, ...machine }
+              };
+            }
+          } else if (node.type === 'Queue') {
+            const queue = data.queues.find(q => q.id === parseInt(node.data.id));
+            if (queue) {
+              return {
+                ...node,
+                data: { ...node.data, ...queue }
+              };
+            }
           }
-        } else if (node.type === 'Queue') {
-          const queue = data.queues.find(q => q.id === parseInt(node.data.id));
-          if (queue) {
-            return {
-              ...node,
-              data: { ...node.data, ...queue }
-            };
-          }
-        }
-        return node;
+          return node;
+        });
       });
-
-      setNodes(updatedNodes);
     };
 
     socket.onclose = () => {
       console.log('Disconnected from the server');
     };
 
+    socket.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
+
     return () => {
       socket.close();
     };
-  }, [nodes]);
+  }, []);
 
   const onConnect = useCallback(
     (params) => {
@@ -105,6 +109,22 @@ const SimulationArea = ({ products }) => {
               outMachines: [...node.data.outMachines, parseInt(params.source)]
             }
           };
+        }else if (node.id === params.target && node.type === 'Machine') {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              nextQueue: parseInt(params.source)
+            }
+          };
+        }else if (node.id === params.source && node.type === 'Machine') {
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              inQueues: [...node.data.inQueues, parseInt(params.target)]
+            }
+          };
         }
         return node;
       });
@@ -125,7 +145,7 @@ const SimulationArea = ({ products }) => {
       data: {
         label: `Queue ${queuesNo + 1}`,
         id: nodes.length + 1,
-        type: 'Queue',
+        name: 'Queue',
         noOfProducts: 0,
         inMachines: [],
         outMachines: []
@@ -144,9 +164,10 @@ const SimulationArea = ({ products }) => {
       data: {
         label: `Machine ${machinesNo + 1}`,
         id: nodes.length + 1,
-        type: 'Machine',
+        name: 'Machine',
         color: 'none',
-        nextQueue: null
+        nextQueue: null,
+        inQueues: []
       },
     };
     setNodes((nds) => [...nds, newNode]);
@@ -166,7 +187,8 @@ const SimulationArea = ({ products }) => {
   };
 
   const simulate = () => {
-    axios.post(`http://localhost:8080/produce/simulation/${products}`, nodes);
+    console.log(nodes.map(node => node.data))
+    axios.post(`http://localhost:8080/produce/simulation/${products}`, nodes.map(node => node.data));
     setSimulated(true)
   };
 
