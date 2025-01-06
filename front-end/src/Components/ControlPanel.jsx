@@ -32,10 +32,10 @@ const ControlPanel = ({ onSimulate, onResimulate, onClear, onaddQueue, onaddMach
           <MdSettingsInputComponent className="control-icon" />
           <span>Machine</span>
         </div>
-        <div className="control-item">
+        {/* <div className="control-item">
           <FaLink className="control-icon" />
           <span>Link</span>
-        </div>
+        </div> */}
         <div className="separator"></div> {/* Separator */}
         <div
           className={`control-item ${activeMenu === 'Simulate' ? 'active' : ''}`}

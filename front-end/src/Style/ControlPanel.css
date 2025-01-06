@@ -1,5 +1,5 @@
 .control-panel {
-    width: 200px; /* Reduced width */
+    width: 150px; /* Reduced width */
     background: linear-gradient(to bottom, #e0dddd, #f0f4f8); /* Smooth gradient */
     border-right: 1px solid #ccc;
     padding: 15px; /* Reduced padding */

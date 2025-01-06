@@ -16,12 +16,13 @@ const Header = ({ products, setProducts }) => {
           <h2>Producer-Consumer Simulation</h2>
         </div>
         <div className="header-center">
-          <p>Number of Products:{products}</p>
+          <p>Number of Products: &nbsp;</p>
           <input
-            type="number"
+            type="text"
             value={products}
             onChange={handleInputChange}
             className="digital-input"
+            pattern="\d*" // This pattern ensures only digits are accepted
           />
         </div>
       </div>

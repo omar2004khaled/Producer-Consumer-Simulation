@@ -150,12 +150,19 @@ const SimulationArea = () => {
     setNodes((nds) => [...nds, newNode]);
   };
 
+  const clearAll = () => {
+    setMachinesNo(0)
+    setQueuesNo(0)
+    setNodes([])
+    setEdges([])
+  };
+
   return (
     <div className='react-flow-container'>
       <ControlPanel
         onSimulate={() => console.log('Simulate')}
         onResimulate={() => console.log('Resimulate')}
-        onClear={() => console.log('Clear')}
+        onClear={clearAll}
         onaddQueue={addQueue}
         onaddMachine={addMachine}
       />

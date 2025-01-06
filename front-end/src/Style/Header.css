@@ -54,15 +54,14 @@
   }
   
   .logo {
-    border-radius: 20px;
-    height: 110px; /* Keep the original size */
+    border-radius: 10px;
+    height: 50px; /* Keep the original size */
     margin-right: 10px; /* Original margin */
     transition: transform 0.3s ease;
   }
   
   .header-center {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     flex: 1; /* Ensure it takes up available space */
@@ -75,19 +74,15 @@
     margin: 0; /* Optional: Adjust margin */
   }
   .digital-input {
-    width: 60px; /* Adjust width */
-    height: 30px; /* Adjust height */
-    font-size: 1.2em; /* Adjust font size */
-    text-align: center; /* Center align the text */
-    border-radius: 5px; /* Rounded corners */
-    border: 1px solid #ccc; /* Light border */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    transition: all 0.3s ease;
+    width: auto; /* Adjust width */
+    height: 35px; /* Adjust height */
+    margin-top: -3px;
+    font-size: 1.3em; /* Adjust font size */
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
   }
   
   .digital-input:focus {
     outline: none;
-    border-color: #007bff; /* Highlight border color */
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.25); /* Glow effect */
   }
   
