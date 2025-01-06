@@ -49,5 +49,9 @@ public class Control {
     public void endSimulation() {
         serviceFacade.endSimulation();
     }
+    @PostMapping("/reSimulation")
+    public void reSimulation() throws InterruptedException {
+        serviceFacade.reSimulation();
+    }
 }
  

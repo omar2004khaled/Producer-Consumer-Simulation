@@ -35,34 +35,36 @@ public class Machine extends shape implements Observer, Runnable {
     public void run() {
         try {
             busy = true;
-            Thread.sleep(time * 1000);
+            Thread.sleep(time * 1000);  // Simulate work duration
         } catch (InterruptedException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-
+    
+        // Process product if available
         if (product != null) {
-            System.out.println("Machine " + getId());
-            Queue queue = queues.get(queueId);
+            System.out.println("Machine " + getId() + " is processing product.");
+            Queue queue = queues.get(queueId);  // Get the queue by its ID
             if (queue != null) {
-                queue.addProduct(product);
+                queue.addProduct(product);  // Add the product to the queue
             }
-            product = null;
-            setColor("white");
-            notifyObservers(this, queues);
-//            machineNotifyFree();
-            busy = false;
+            product = null;  // Reset the product in the machine
+            setColor("white");  // Set machine color to white (indicating idle)
+            notifyObservers(this, queues);  // Notify observers about the state change
+   // Notify that the machine is free
+            busy = false;  // Set machine to not busy
         }
+        machineNotifyFree(); 
     }
-
+    
     private void machineNotifyFree() {
         System.out.println("Machine " + getId() + " is now free and available.");
         Queue queue = queues.get(queueId);
         if (queue != null) {
-            queue.machinesfree(getId());
+            queue.machinesfree(getId());  // Notify that machine is free
             notifyObservers(this, queues);
         }
-        notifyWebSocketHandler();
+        notifyWebSocketHandler();  // Notify the client via WebSocket
     }
 
     public void machineNotifyBusy() {

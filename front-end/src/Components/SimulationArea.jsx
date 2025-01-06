@@ -191,9 +191,44 @@ const SimulationArea = ({ products }) => {
   };
 
   const stopSimulation = () => {
-    axios.post(`http://localhost:8080/produce/endSimulation`);
+    // Reset all nodes by iterating over them and setting data to empty and color to white
+    const updatedNodes = nodes.map((node) => {
+      if (node.type === 'Machine') {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            color: 'white', // Set color to white
+            noOfProducts: 0, // Reset product count or any other relevant data
+            inQueues: [], // Clear inQueues
+            nextQueue: null, // Clear nextQueue
+          },
+        };
+      } else if (node.type === 'Queue') {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            color: 'white', // Set color to white
+            noOfProducts: 0, // Reset product count
+            inMachines: [], // Clear inMachines
+            outMachines: [], // Clear outMachines
+          },
+        };
+      }
+      return node;
+    });
+  
+    // Update the nodes state with the reset values
+    setNodes(updatedNodes);
+  
+    // Optionally: send a request to stop the simulation on the backend
+    axios.post('http://localhost:8080/produce/endSimulation');
+  
+    // Save the state after stopping the simulation
+    saveState();
   };
-
+  
   const simulate = () => {
     console.log(nodes.map(node => node.data));
     axios.post(`http://localhost:8080/produce/simulation/${products}`, nodes.map(node => node.data));
@@ -205,6 +240,7 @@ const SimulationArea = ({ products }) => {
       axios.post(`http://localhost:8080/produce/reSimulation`);
     }
   };
+
 
   const continueSimulation = () => {
     if (simulated) {

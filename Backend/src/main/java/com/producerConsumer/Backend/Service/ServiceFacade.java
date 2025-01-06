@@ -32,5 +32,7 @@ public class ServiceFacade {
     public Project getProject(){
         return simulate.getProject();
     }
-
+    public void reSimulation() throws InterruptedException {
+        simulate.resimulate();
+    }
 }
