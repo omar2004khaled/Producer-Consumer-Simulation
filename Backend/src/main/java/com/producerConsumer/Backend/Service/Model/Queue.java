@@ -1,6 +1,7 @@
 package com.producerConsumer.Backend.Service.Model;
 
 import com.producerConsumer.Backend.Service.Observer;
+import com.producerConsumer.Backend.Service.Subject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ public class Queue extends shape implements Observer, Runnable {
     private List<Product> products = new ArrayList<>();
     private Thread thread;
     private Map<String, Machine> machinesMap; // Map to store all machines by their IDs
+    private List<Observer> observers = new ArrayList<>();
 
     public Queue() {
     }
@@ -21,11 +23,24 @@ public class Queue extends shape implements Observer, Runnable {
         super(dto);
         this.machinestoList = dto.outMachines;
         this.machinesMap = machinesMap;
+
+        for (String machineID : machinestoList) {
+            attach(machineID);
+        }
+    }
+
+    @Override
+    public void update(Machine machine) {
+        System.out.println("Queue " + getId() + " received an update from machine " + machine.getId());
+        if (machine.getProduct() == null) {
+            // Machine is free, notify the queue
+            notifyObservers(this, machinesMap);
+        }
     }
 
     @Override
     public void update(Queue queue) {
-        System.out.println("Queue " + getId() + " received an update from a machine.");
+        System.out.println("Queue " + getId() + " received an update from another queue.");
     }
 
     public void addtoProduct(Product product) {
@@ -34,6 +49,7 @@ public class Queue extends shape implements Observer, Runnable {
             this.thread = new Thread(this::run);
             thread.start();
         }
+        notifyObservers(this, machinesMap); // Notify machines that a product is added
     }
 
     @Override
@@ -65,7 +81,7 @@ public class Queue extends shape implements Observer, Runnable {
             machinesfreeList.add(id);
             Machine machine = machinesMap.get(id);
             if (machine != null) {
-                machine.notifyObservers(this); // Notify that the machine is free
+                machine.notifyObservers(this, machinesMap); // Notify that the machine is free
             }
         }
     }
@@ -76,6 +92,8 @@ public class Queue extends shape implements Observer, Runnable {
 
     public void addProduct(Product product) {
         this.products.add(product);
+        System.out.println(observers);
+        notifyObservers(this, machinesMap); // Notify machines that a product is added
     }
 
     public void removeProduct(Product product) {

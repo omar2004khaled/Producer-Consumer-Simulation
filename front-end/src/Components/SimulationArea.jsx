@@ -39,6 +39,7 @@ const SimulationArea = ({ products }) => {
     };
 
     socket.onmessage = (event) => {
+      console.log('Message from server:', event.data);
       const data = JSON.parse(event.data);
       setNodes(prevNodes => {
         return prevNodes.map(node => {
@@ -73,7 +74,8 @@ const SimulationArea = ({ products }) => {
     };
 
     return () => {
-      socket.close();
+      console.log('Closing WebSocket connection');
+      socket.onopen();
     };
   }, []);
 

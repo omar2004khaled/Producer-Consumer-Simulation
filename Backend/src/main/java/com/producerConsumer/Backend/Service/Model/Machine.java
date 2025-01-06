@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Machine extends shape implements Subject, Runnable {
+public class Machine extends shape implements Observer, Runnable {
     private String queueId;
     private Product product;
     private int time;
     private Map<String, Queue> queues;
-    private List<Observer> observers = new ArrayList<>();
     private List<String> inQueues; // List of inQueues
 
     public Machine() {
@@ -27,27 +26,7 @@ public class Machine extends shape implements Subject, Runnable {
 
         // Attach this machine to all inQueues
         for (String queueId : inQueues) {
-            Queue queue = queues.get(queueId);
-            if (queue != null) {
-                attach(queue);
-            }
-        }
-    }
-
-    @Override
-    public void attach(Observer observer) {
-        observers.add(observer);
-    }
-
-    @Override
-    public void detach(Observer observer) {
-        observers.remove(observer);
-    }
-
-    @Override
-    public void notifyObservers(Queue queue) {
-        for (Observer observer : observers) {
-            observer.update(queue);
+            attach(queueId);
         }
     }
 
@@ -76,7 +55,7 @@ public class Machine extends shape implements Subject, Runnable {
         Queue queue = queues.get(queueId);
         if (queue != null) {
             queue.machinesfree(getId());
-            notifyObservers(queue);
+            notifyObservers(this,queues);
         }
     }
 
@@ -105,5 +84,18 @@ public class Machine extends shape implements Subject, Runnable {
 
     public void setTime(int time) {
         this.time = time;
+    }
+
+    @Override
+    public void update(Machine machine) {
+        // Handle updates from other machines if needed
+    }
+
+    @Override
+    public void update(Queue queue) {
+        // Handle updates from queues
+        if (!queue.getProducts().isEmpty()) {
+            setProduct(queue.getProducts().remove(0));
+        }
     }
 }

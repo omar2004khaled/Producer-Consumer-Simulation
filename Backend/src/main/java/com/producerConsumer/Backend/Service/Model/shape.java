@@ -1,9 +1,11 @@
 package com.producerConsumer.Backend.Service.Model;
 
+import com.producerConsumer.Backend.Service.Subject;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class shape {
+public abstract class shape extends Subject {
     private String name;
     private double x;
     private double y;

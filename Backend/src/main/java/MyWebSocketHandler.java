@@ -9,7 +9,10 @@ import com.producerConsumer.Backend.Service.Model.Queue;
 
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
+import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+@Component
 public class MyWebSocketHandler extends TextWebSocketHandler {
 
     private final ServiceSimulation simulation = ServiceSimulation.getInstance();
