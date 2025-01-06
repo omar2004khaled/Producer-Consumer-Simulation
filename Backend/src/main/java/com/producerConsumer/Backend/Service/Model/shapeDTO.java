@@ -7,4 +7,5 @@ public class shapeDTO {
     public String color;
     public String text;
     public String id;
+    public Queue nextQueue;
 }

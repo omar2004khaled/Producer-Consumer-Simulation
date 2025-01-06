@@ -6,6 +6,7 @@ import com.producerConsumer.Backend.Service.Model.Product;
 import com.producerConsumer.Backend.Service.Model.shapeDTO;
 import com.producerConsumer.Backend.Service.Model.shapeFactory;
 import com.producerConsumer.Backend.Service.Model.Queue;
+import com.producerConsumer.Backend.Service.Model.shape;
 
 public class ServiceSimulation {
     private static volatile ServiceSimulation simulate = null;
@@ -45,12 +46,17 @@ public class ServiceSimulation {
         }
     }
 
-    public void buildProject(List<shapeDTO> shapeDTOs) {
-        for (shapeDTO dto : shapeDTOs) {
-            this.project.addShape(shapeFactory.getType(dto));
+  public void buildProject(List<shapeDTO> shapeDTOs) {
+    for (shapeDTO dto : shapeDTOs) {
+        shape newShape = shapeFactory.getType(dto);
+        if (newShape != null) {
+            System.out.println("Adding shape with ID: " + newShape.getId());
+            this.project.addShape(newShape);
+        } else {
+            System.err.println("Shape creation failed for DTO: " + dto);
         }
-    }
-
+     }
+   }
     public Project getProject() {
         return project;
     }
@@ -68,9 +74,8 @@ public class ServiceSimulation {
     public void runSimulation() throws InterruptedException {
         while (!flag) {
             TimeUnit.SECONDS.sleep(getRandomTime());
-
             if (productIn > 0) {
-                Queue queue = (Queue) this.project.getShapes().get("0");
+                Queue queue = (Queue) this.project.getShapes().get("1");
                 if (queue != null) {
                     saveState(); 
                     queue.addProduct(new Product());
