@@ -11,7 +11,10 @@ import com.producerConsumer.Backend.Service.Model.Queue;
 import com.producerConsumer.Backend.Service.Model.shape;
 import com.producerConsumer.Backend.Service.Model.Machine;
 
+import com.producerConsumer.Backend.Controller.MyWebSocketHandler;
+
 public class ServiceSimulation {
+
     private static volatile ServiceSimulation simulate = null;
     private Project project = new Project();
     private Caretaker caretaker = new Caretaker();
@@ -21,8 +24,13 @@ public class ServiceSimulation {
     private Map<String, Machine> machines = new HashMap<>(); // Map to store machines by their IDs
     private Queue lastQueue;
     private Queue firstQueue;
+    private MyWebSocketHandler webSocketHandler;
 
     private ServiceSimulation() {
+    }
+
+    public void setWebSocketHandler(MyWebSocketHandler webSocketHandler) {
+        this.webSocketHandler = webSocketHandler;
     }
 
     public void setProductIn(int productIn) {
@@ -46,17 +54,19 @@ public class ServiceSimulation {
 
     public void addProduct() {
         productIn++;
+        notifyWebSocketHandler();
     }
 
     public void removeProduct() {
         if (productIn > 0) {
             productIn--;
+            notifyWebSocketHandler();
         }
     }
 
     public void buildProject(List<shapeDTO> shapeDTOs) {
         for (shapeDTO dto : shapeDTOs) {
-            shape newShape = shapeFactory.getType(dto, queues, machines); // Pass the maps of queues and machines
+            shape newShape = shapeFactory.getType(dto, queues, machines, webSocketHandler); // Pass the maps of queues and machines
             if (newShape != null) {
                 System.out.println("Adding shape with ID: " + newShape.getId());
                 this.project.addShape(newShape);
@@ -64,6 +74,7 @@ public class ServiceSimulation {
                 System.err.println("Shape creation failed for DTO: " + dto);
             }
         }
+        notifyWebSocketHandler();
     }
 
     public Project getProject() {
@@ -90,6 +101,7 @@ public class ServiceSimulation {
                     queue.addProduct(new Product());
                     productIn--;
                     System.out.println(simulate.getFirstQueue().getProducts());
+                    notifyWebSocketHandler();
                 } else {
                     System.err.println("Queue with ID '1' does not exist!");
                 }
@@ -101,10 +113,12 @@ public class ServiceSimulation {
     public void stopSimulation() {
         this.productIn = 0;
         this.flag = true;
+        notifyWebSocketHandler();
     }
 
     public void start() {
         this.flag = false;
+        notifyWebSocketHandler();
     }
 
     public Map<String, Queue> getQueues() {
@@ -113,6 +127,7 @@ public class ServiceSimulation {
 
     public void setQueues(Map<String, Queue> queues) {
         this.queues = queues;
+        notifyWebSocketHandler();
     }
 
     public Map<String, Machine> getMachines() {
@@ -121,6 +136,7 @@ public class ServiceSimulation {
 
     public void setMachines(Map<String, Machine> machines) {
         this.machines = machines;
+        notifyWebSocketHandler();
     }
 
     public static ServiceSimulation getSimulate() {
@@ -137,6 +153,7 @@ public class ServiceSimulation {
 
     public void setLastQueue(Queue lastQueue) {
         this.lastQueue = lastQueue;
+        notifyWebSocketHandler();
     }
 
     public Queue getFirstQueue() {
@@ -145,5 +162,16 @@ public class ServiceSimulation {
 
     public void setFirstQueue(Queue firstQueue) {
         this.firstQueue = firstQueue;
+        notifyWebSocketHandler();
+    }
+
+    private void notifyWebSocketHandler() {
+        if (webSocketHandler != null) {
+            try {
+                webSocketHandler.broadcastUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

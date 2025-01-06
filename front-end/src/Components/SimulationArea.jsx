@@ -72,10 +72,10 @@ const SimulationArea = ({ products }) => {
     socket.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
-
+    
     return () => {
       console.log('Closing WebSocket connection');
-      socket.onopen();
+      socket.close();
     };
   }, []);
 
