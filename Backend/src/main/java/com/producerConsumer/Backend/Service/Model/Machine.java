@@ -13,6 +13,7 @@ public class Machine extends shape implements Observer, Runnable {
     private int time;
     private Map<String, Queue> queues;
     private List<String> inQueues; // List of inQueues
+    private boolean busy;
 
     public Machine() {
     }
@@ -33,6 +34,7 @@ public class Machine extends shape implements Observer, Runnable {
     @Override
     public void run() {
         try {
+            busy = true;
             Thread.sleep(time * 1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -47,6 +49,7 @@ public class Machine extends shape implements Observer, Runnable {
             }
             product = null;
             machineNotifyFree();
+            busy = false;
         }
     }
 
@@ -94,7 +97,7 @@ public class Machine extends shape implements Observer, Runnable {
     @Override
     public void update(Queue queue) {
         // Handle updates from queues
-        if (!queue.getProducts().isEmpty()) {
+        if (!queue.getProducts().isEmpty() && !busy) {
             setProduct(queue.getProducts().remove(0));
         }
     }

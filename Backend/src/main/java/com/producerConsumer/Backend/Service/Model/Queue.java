@@ -33,7 +33,6 @@ public class Queue extends shape implements Observer, Runnable {
     public void update(Machine machine) {
         System.out.println("Queue " + getId() + " received an update from machine " + machine.getId());
         if (machine.getProduct() == null) {
-            // Machine is free, notify the queue
             notifyObservers(this, machinesMap);
         }
     }
