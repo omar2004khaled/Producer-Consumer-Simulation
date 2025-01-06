@@ -11,7 +11,10 @@
   },
   "dependencies": {
     "@xyflow/react": "^12.3.6",
+    "axios": "^1.7.9",
+    "file-saver": "^2.0.5",
     "front-end": "file:",
+    "lodash": "^4.17.21",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",

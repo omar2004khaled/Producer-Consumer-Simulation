@@ -1,34 +1,35 @@
 import '../Style/simulationArea.css';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import '@xyflow/react/dist/style.css';
+import { saveAs } from 'file-saver';
 
 import {
   ReactFlow,
   Controls,
-  Background,
   useNodesState,
   useEdgesState,
   addEdge,
-  ReactFlowProvider,
-  SmoothStepEdge,
-  MarkerType,
 } from '@xyflow/react';
 
 import Machine from './Machine';
 import Queue from './Queue';
 import { Arrow } from './Arrow';
 import ControlPanel from './ControlPanel';
+import axios from 'axios';
 
 const nodeTypes = {
   Machine: Machine,
   Queue: Queue,
 };
 
-const SimulationArea = () => {
+const SimulationArea = ({ products }) => {
+  const [simulated, setSimulated] = useState(false);
   const [queuesNo, setQueuesNo] = useState(0);
   const [machinesNo, setMachinesNo] = useState(0);
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const undoStack = useRef([]);
+  const redoStack = useRef([]);
 
   useEffect(() => {
     const socket = new WebSocket('ws://localhost:8080/ws');
@@ -87,7 +88,6 @@ const SimulationArea = () => {
         return;
       }
 
-      // Update the source and target nodes
       const updatedNodes = nodes.map(node => {
         if (node.id === params.source && node.type === 'Queue') {
           return {
@@ -111,6 +111,7 @@ const SimulationArea = () => {
 
       setNodes(updatedNodes);
       setEdges((eds) => addEdge({ ...params, ...Arrow }, eds));
+      saveState();
     },
     [setEdges, nodes],
   );
@@ -131,7 +132,7 @@ const SimulationArea = () => {
       },
     };
     setNodes((nds) => [...nds, newNode]);
-    console.log(nodes)
+    saveState();
   };
 
   const addMachine = () => {
@@ -144,10 +145,12 @@ const SimulationArea = () => {
         label: `Machine ${machinesNo + 1}`,
         id: nodes.length + 1,
         type: 'Machine',
-        color: 'none'
+        color: 'none',
+        nextQueue: null
       },
     };
     setNodes((nds) => [...nds, newNode]);
+    saveState();
   };
 
   const clearAll = () => {
@@ -155,16 +158,136 @@ const SimulationArea = () => {
     setQueuesNo(0)
     setNodes([])
     setEdges([])
+    saveState();
+  };
+
+  const stopSimulation = () => {
+    axios.post(`http://localhost:8080/produce/endSimulation`);
+  };
+
+  const simulate = () => {
+    axios.post(`http://localhost:8080/produce/simulation/${products}`, nodes);
+    setSimulated(true)
+  };
+
+  const resimulate = () => {
+    if (simulated) {
+      axios.post(`http://localhost:8080/produce/reSimulation`);
+    }
+  };
+
+  const continueSimulation = () => {
+    if (simulated) {
+      axios.post(`http://localhost:8080/produce/continueSimulation`);
+    }
+  };
+
+  const saveSimulation = async () => {
+    const simulationState = {
+      nodes,
+      edges,
+      queuesNo,
+      machinesNo
+    };
+    const options = {
+      types: [
+        {
+          description: 'JSON Files',
+          accept: {
+            'application/json': ['.json'],
+          },
+        },
+      ],
+    };
+    try {
+      const handle = await window.showSaveFilePicker(options);
+      const writable = await handle.createWritable();
+      await writable.write(JSON.stringify(simulationState, null, 2));
+      await writable.close();
+    } catch (error) {
+      console.error('Error saving file:', error);
+    }
+  };
+
+  const loadSimulation = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const savedState = JSON.parse(e.target.result);
+      const { nodes, edges, queuesNo, machinesNo } = savedState;
+      setNodes(nodes);
+      setEdges(edges);
+      setQueuesNo(queuesNo);
+      setMachinesNo(machinesNo);
+    };
+    reader.readAsText(file);
+  };
+
+  const saveState = () => {
+    undoStack.current.push({
+      nodes: [...nodes],
+      edges: [...edges],
+      queuesNo,
+      machinesNo
+    });
+    redoStack.current = [];
+  };
+
+  const undo = () => {
+    if (undoStack.current.length > 0) {
+      const currentState = {
+        nodes: [...nodes],
+        edges: [...edges],
+        queuesNo,
+        machinesNo
+      };
+      redoStack.current.push(currentState);
+      const previousState = undoStack.current.pop();
+      setNodes(previousState.nodes);
+      setEdges(previousState.edges);
+      setQueuesNo(previousState.queuesNo);
+      setMachinesNo(previousState.machinesNo);
+    }
+  };
+
+  const redo = () => {
+    if (redoStack.current.length > 0) {
+      const currentState = {
+        nodes: [...nodes],
+        edges: [...edges],
+        queuesNo,
+        machinesNo
+      };
+      undoStack.current.push(currentState);
+      const nextState = redoStack.current.pop();
+      setNodes(nextState.nodes);
+      setEdges(nextState.edges);
+      setQueuesNo(nextState.queuesNo);
+      setMachinesNo(nextState.machinesNo);
+    }
   };
 
   return (
     <div className='react-flow-container'>
       <ControlPanel
-        onSimulate={() => console.log('Simulate')}
-        onResimulate={() => console.log('Resimulate')}
+        onSimulate={simulate}
+        onResimulate={resimulate}
         onClear={clearAll}
+        onStop={stopSimulation}
+        onContinue={continueSimulation}
         onaddQueue={addQueue}
         onaddMachine={addMachine}
+        onSave={saveSimulation}
+        onLoad={() => document.getElementById('fileInput').click()}
+        onUndo={undo}
+        onRedo={redo}
+      />
+      <input
+        id="fileInput"
+        type="file"
+        accept=".json"
+        style={{ display: 'none' }}
+        onChange={loadSimulation}
       />
       <ReactFlow
         nodes={nodes}

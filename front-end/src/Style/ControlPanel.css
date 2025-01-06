@@ -5,7 +5,7 @@
     padding: 15px; /* Reduced padding */
     position: fixed;
     left: 0;
-    top: 60px; /* Adjusted to avoid being hidden behind the header */
+    top: 5px; /* Adjusted to avoid being hidden behind the header */
     bottom: 0; /* Full height menu */
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     overflow-y: auto;
@@ -14,7 +14,7 @@
   .control-items {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Increased gap for better spacing */
+    gap: 10px; /* Increased gap for better spacing */
     padding-top: 90px;
   }
   
@@ -38,7 +38,7 @@
   }
   
   .control-icon {
-    font-size: 2.5em;
+    font-size: 25px;
     color: #1a73e8;
   }
   
