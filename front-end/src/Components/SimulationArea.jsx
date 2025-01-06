@@ -40,29 +40,35 @@ const SimulationArea = ({ products }) => {
 
     socket.onmessage = (event) => {
       console.log('Message from server:', event.data);
-      const data = JSON.parse(event.data);
-      setNodes(prevNodes => {
-        return prevNodes.map(node => {
-          if (node.type === 'Machine') {
-            const machine = data.machines.find(m => m.id === parseInt(node.data.id));
-            if (machine) {
-              return {
-                ...node,
-                data: { ...node.data, ...machine }
-              };
+      try {
+        const data = JSON.parse(event.data);
+        setNodes(prevNodes => {
+          return prevNodes.map(node => {
+            if (node.type === 'Machine') {
+              const machine = data.machines.find(m => m.id === node.data.id.toString());
+              if (machine) {
+                console.log("hello");
+                console.log(machine);
+                return {
+                  ...node,
+                  data: { ...node.data, ...machine }
+                };
+              }
+            } else if (node.type === 'Queue') {
+              const queue = data.queues.find(q => q.id === node.data.id.toString());
+              if (queue) {
+                return {
+                  ...node,
+                  data: { ...node.data, ...queue }
+                };
+              }
             }
-          } else if (node.type === 'Queue') {
-            const queue = data.queues.find(q => q.id === parseInt(node.data.id));
-            if (queue) {
-              return {
-                ...node,
-                data: { ...node.data, ...queue }
-              };
-            }
-          }
-          return node;
+            return node;
+          });
         });
-      });
+      } catch (error) {
+        console.error('Error parsing message from server:', error);
+      }
     };
 
     socket.onclose = () => {
@@ -72,7 +78,7 @@ const SimulationArea = ({ products }) => {
     socket.onerror = (error) => {
       console.error('WebSocket error:', error);
     };
-    
+
     return () => {
       console.log('Closing WebSocket connection');
       socket.close();
@@ -111,7 +117,7 @@ const SimulationArea = ({ products }) => {
               outMachines: [...node.data.outMachines, parseInt(params.source)]
             }
           };
-        }else if (node.id === params.target && node.type === 'Machine') {
+        } else if (node.id === params.target && node.type === 'Machine') {
           return {
             ...node,
             data: {
@@ -119,7 +125,7 @@ const SimulationArea = ({ products }) => {
               nextQueue: parseInt(params.source)
             }
           };
-        }else if (node.id === params.source && node.type === 'Machine') {
+        } else if (node.id === params.source && node.type === 'Machine') {
           return {
             ...node,
             data: {
@@ -177,10 +183,10 @@ const SimulationArea = ({ products }) => {
   };
 
   const clearAll = () => {
-    setMachinesNo(0)
-    setQueuesNo(0)
-    setNodes([])
-    setEdges([])
+    setMachinesNo(0);
+    setQueuesNo(0);
+    setNodes([]);
+    setEdges([]);
     saveState();
   };
 
@@ -189,9 +195,9 @@ const SimulationArea = ({ products }) => {
   };
 
   const simulate = () => {
-    console.log(nodes.map(node => node.data))
+    console.log(nodes.map(node => node.data));
     axios.post(`http://localhost:8080/produce/simulation/${products}`, nodes.map(node => node.data));
-    setSimulated(true)
+    setSimulated(true);
   };
 
   const resimulate = () => {

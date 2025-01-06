@@ -32,8 +32,8 @@ public class Queue extends shape implements Observer, Runnable {
     @Override
     public void update(Machine machine) {
         System.out.println("Queue " + getId() + " received an update from machine " + machine.getId());
-        if (machine.getProduct() == null) {
-            notifyObservers(this, machinesMap);
+        if (!products.isEmpty()) {
+            machine.setProduct(products.remove(0));
         }
     }
 

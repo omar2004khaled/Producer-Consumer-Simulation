@@ -86,8 +86,8 @@ public class ServiceSimulation {
     }
 
     public int getRandomTime() {
-        int minimum = 1;
-        int maximum = 5;
+        int minimum = 5;
+        int maximum = 20;
         return (int) Math.floor(Math.random() * (maximum - minimum + 1) + minimum);
     }
 

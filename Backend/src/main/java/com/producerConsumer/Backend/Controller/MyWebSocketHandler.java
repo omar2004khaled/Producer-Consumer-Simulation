@@ -52,7 +52,9 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
         Map<String, Machine> machinesMap = simulation.getMachines();
         Map<String, Queue> queuesMap = simulation.getQueues();
 
-        String machinesJson = objectMapper.writeValueAsString(machinesMap.values());
+        String machinesJson = objectMapper.writeValueAsString(machinesMap.values().stream()
+                .map(machine -> Map.of("id", machine.getId(), "color", machine.getColor()))
+                .collect(Collectors.toList()));
         String queuesJson = objectMapper.writeValueAsString(queuesMap.values().stream()
                 .map(queue -> Map.of("id", queue.getId(), "noOfProducts", queue.getProducts().size()))
                 .collect(Collectors.toList()));

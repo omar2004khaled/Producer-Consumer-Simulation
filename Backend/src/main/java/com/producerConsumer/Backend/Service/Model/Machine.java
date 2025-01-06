@@ -45,10 +45,12 @@ public class Machine extends shape implements Observer, Runnable {
             System.out.println("Machine " + getId());
             Queue queue = queues.get(queueId);
             if (queue != null) {
-                queue.addtoProduct(product);
+                queue.addProduct(product);
             }
             product = null;
-            machineNotifyFree();
+            setColor("white");
+            notifyObservers(this, queues);
+//            machineNotifyFree();
             busy = false;
         }
     }
@@ -74,11 +76,10 @@ public class Machine extends shape implements Observer, Runnable {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public synchronized void setProduct(Product product) {
         this.product = product;
         System.out.println(product.getColor());
         this.setColor(product.getColor());
-        notifyWebSocketHandler();
         if (webSocketHandler != null) {
             try {
                 System.out.println("hello");

@@ -3,7 +3,7 @@ package com.producerConsumer.Backend.Service.Model;
 public class Product {
     private static int index = 0;
     private String color;
-    private static String[] colorStrings = {"Red", "Green", "Blue", "Yellow", "Black", "White", "Pink", "Purple", "Orange", "Brown"};
+    private static String[] colorStrings = {"Red", "Green", "Blue", "Yellow", "Black", "Pink", "Purple", "Orange", "Brown"};
 
     public Product() {
         int randomIndex = (index++) % colorStrings.length;
