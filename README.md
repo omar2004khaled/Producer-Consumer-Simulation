@@ -1,5 +1,4 @@
-# Producer-Consumer-Simulation
-# **Producer-Consumer Simulation**  
+# Producer-Consumer-Simulation 
 
 ## **Overview**  
 A Java Spring Boot & React-based simulation of an assembly line with machines (producers/consumers) and queues, using concurrency, observer, and snapshot patterns.  
